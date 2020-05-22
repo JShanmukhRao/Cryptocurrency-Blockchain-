@@ -72,8 +72,7 @@ class Blockchain:
                                  })
         return len(self.chain)+1
     def add_node(self,address):
-        parsed_url=urlparse(address)
-        self.node.add(parsed_url.netloc)
+        self.node.add(urlparse(address).netloc)
      
     def replace_chain(self):
         network=self.node
@@ -92,6 +91,11 @@ class Blockchain:
             self.chain=longest_chain
             return True
         return False
+    
+    def rec(self):
+        network=self.node
+        for node in network:
+            response=requests.get(f'http://{node}/replace_chain')
     
 # Mining our Blockchain
     
@@ -112,7 +116,7 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
-    blockchain.add_transaction(sender=node_address , receiver='Shubham' , amount=1)
+    blockchain.add_transaction(sender=node_address , receiver='Yash' , amount=1)
     block=blockchain.create_block(proof, previous_hash)
     self_hash=blockchain.hash(block)
     response={'message':"SuccessFull",
@@ -124,6 +128,8 @@ def mine_block():
               'self_hash':self_hash,
               'transaction': block['transaction']
               }
+    blockchain.rec()
+           
     return jsonify(response),200
 
  

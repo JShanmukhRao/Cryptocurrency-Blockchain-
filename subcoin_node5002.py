@@ -92,6 +92,11 @@ class Blockchain:
             return True
         return False
     
+    def rec(self):
+        network=self.node
+        for node in network:
+            response=requests.get(f'http://{node}/replace_chain')
+    
 # Mining our Blockchain
     
 #creating Web App
@@ -123,6 +128,8 @@ def mine_block():
               'self_hash':self_hash,
               'transaction': block['transaction']
               }
+    blockchain.rec()
+           
     return jsonify(response),200
 
  

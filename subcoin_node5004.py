@@ -79,10 +79,10 @@ class Blockchain:
         longest_chain=None
         max_len=len(self.chain)
         for node in network:
-            response=requests.get(f'https://{node}/get_chain')
+            response=requests.get(f'http://{node}/get_chain')
            
             if response.status_code==200:
-                length=response.json()['lenght']
+                length=response.json()['length']
                 chain=response.json()['chain']
                 if length > max_len and self.is_chain_valid(chain):
                     max_len=length
@@ -91,6 +91,11 @@ class Blockchain:
             self.chain=longest_chain
             return True
         return False
+    
+    def rec(self):
+        network=self.node
+        for node in network:
+            response=requests.get(f'http://{node}/replace_chain')
     
 # Mining our Blockchain
     
@@ -111,7 +116,7 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
-    blockchain.add_transaction(sender=node_address , receiver='Annu ' , amount=1)
+    blockchain.add_transaction(sender=node_address , receiver='Yash' , amount=1)
     block=blockchain.create_block(proof, previous_hash)
     self_hash=blockchain.hash(block)
     response={'message':"SuccessFull",
@@ -123,6 +128,8 @@ def mine_block():
               'self_hash':self_hash,
               'transaction': block['transaction']
               }
+    blockchain.rec()
+           
     return jsonify(response),200
 
  
